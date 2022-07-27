@@ -1,17 +1,22 @@
 import app from "../src/app.js";
 import supertest from "supertest";
-import fake from "./factorys/AuthData.js";
+import * as dataRecomendation from "./scenarioFactorys/ScenarioRecomendation.js";
+import { prisma } from "../src/database.js";
 
-describe("create recomendation", () => {
-  it(" test create /recommendations", async () => {
-    const bodyRecommendations = {
-      name: "fake.name()",
-      youtubeLink:
-        "https://www.youtube.com/watch?v=uaebgEChyDQ&list=PLpI679rmsJ1ACWMG1vhBlmQgU39UgYjMn&index=8",
-    };
+beforeEach(async () => {
+  await prisma.recommendation.deleteMany();
+});
+describe("recomendation tests", () => {
+  it(" test create /recommendations sucess", async () => {
     const result = await supertest(app)
       .post("/recommendations")
-      .send(bodyRecommendations);
+      .send(dataRecomendation.CreateRecommendations());
+    expect(result.status).toEqual(201);
+  });
+  it(" like and recomendation", async () => {
+    const result = await supertest(app)
+      .post("/recommendations/:id/upvote")
+      .send();
     expect(result.status).toEqual(201);
   });
 });

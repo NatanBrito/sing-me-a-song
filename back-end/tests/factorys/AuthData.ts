@@ -9,12 +9,16 @@ function password() {
 function url() {
   return faker.internet.url();
 }
-function name() {
-  return faker.name;
+function youtubeUrl() {
+  return "https://www.youtube.com/watch?v=uaebgEChyDQ&t=2380s";
+}
+function nameSong() {
+  return faker.music.songName();
 }
 export default {
   email,
   password,
   url,
-  name,
+  nameSong,
+  youtubeUrl,
 };
