@@ -4,7 +4,15 @@ import { faker } from "@faker-js/faker";
 import { recommendationService } from "../../src/services/recommendationsService.js";
 import { recommendationRepository } from "../../src/repositories/recommendationRepository.js";
 
-describe("unit test recommendation sucess", () => {
+jest.spyOn(recommendationRepository, "find").mockImplementation((): any => {
+  return {
+    id: 1,
+    name: "xangai",
+    youtubeLink: "https://www.youtube.com/",
+    score: 10,
+  };
+});
+describe("insert recommendation ", () => {
   jest
     .spyOn(recommendationRepository, "create")
     .mockImplementation((): any => {});
@@ -34,3 +42,14 @@ describe("unit test recommendation sucess", () => {
     expect(insert).rejects.toHaveProperty("type", "conflict");
   });
 });
+// describe(" getByIdOrFail", () => {
+//   it("sucess upvote", async () => {
+//    const vote= recommendationService.
+//     expect().toBe({
+//       id: 1,
+//       name: "xangai",
+//       youtubeLink: "https://www.youtube.com/",
+//       score: 10,
+//     });
+//   });
+// });
