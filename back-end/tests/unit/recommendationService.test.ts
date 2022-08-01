@@ -42,14 +42,14 @@ describe("insert recommendation ", () => {
     expect(insert).rejects.toHaveProperty("type", "conflict");
   });
 });
-// describe(" getByIdOrFail", () => {
-//   it("sucess upvote", async () => {
-//    const vote= recommendationService.
-//     expect().toBe({
-//       id: 1,
-//       name: "xangai",
-//       youtubeLink: "https://www.youtube.com/",
-//       score: 10,
-//     });
-//   });
-// });
+describe(" getByIdOrFail", () => {
+  it("sucess upvote", async () => {
+    const vote = recommendationService.upvote;
+    expect(vote).toBe({
+      id: 1,
+      name: "xangai",
+      youtubeLink: "https://www.youtube.com/",
+      score: 10,
+    });
+  });
+});

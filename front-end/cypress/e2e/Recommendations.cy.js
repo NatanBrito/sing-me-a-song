@@ -34,6 +34,6 @@ describe("random page", () => {
     });
   });
   after(() => {
-    // cy.resetDB();
+    cy.request("http://localhost:5000/recommendations/deleteDataTest");
   });
 });

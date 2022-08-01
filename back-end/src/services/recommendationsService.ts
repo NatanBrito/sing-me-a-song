@@ -81,12 +81,16 @@ function getScoreFilter(random: number) {
 
   return "lte";
 }
+async function deleteData() {
+  return await recommendationRepository.removeData();
+}
 
 export const recommendationService = {
   insert,
   upvote,
   downvote,
   getRandom,
+  deleteData,
   get,
   getById: getByIdOrFail,
   getTop,
