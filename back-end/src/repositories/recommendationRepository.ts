@@ -69,9 +69,10 @@ async function remove(id: number) {
   });
 }
 async function removeData() {
-  await prisma.recommendation.deleteMany({});
+  await prisma.$transaction([
+    prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`,
+  ]);
 }
-
 export const recommendationRepository = {
   create,
   findAll,

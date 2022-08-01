@@ -4,9 +4,11 @@ import app from "../../src/app.js";
 import * as dataRecomendation from "../scenarioFactorys/ScenarioRecomendation.js";
 import { prisma } from "../../src/database.js";
 
-// beforeEach(async () => {
-//   await prisma.recommendation.deleteMany();
-// });
+beforeAll(async () => {
+  await prisma.$transaction([
+    prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`,
+  ]);
+});
 describe("recomendation tests", () => {
   it(" test create  sucess", async () => {
     const result = await supertest(app)
@@ -51,13 +53,18 @@ describe("recomendation tests", () => {
     expect(result.body).toBeDefined();
   });
   it(" get amount  sucess", async () => {
-    const result = await supertest(app).get("/recommendations/top/100");
+    const result = await supertest(app).get(`/recommendations/top/100`);
     expect(result.status).toEqual(200);
     expect(result.body).toBeDefined();
   });
-  it(" get amount  sucess", async () => {
-    const result = await supertest(app).get("/recommendations/100");
+  it(" getById amount  sucess", async () => {
+    const result = await supertest(app).get("/recommendations/1");
     expect(result.status).toEqual(200);
     expect(result.body).toBeDefined();
   });
+});
+afterAll(async () => {
+  await prisma.$transaction([
+    prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`,
+  ]);
 });

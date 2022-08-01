@@ -54,13 +54,6 @@ async function getById(req: Request, res: Response) {
   const recommendation = await recommendationService.getById(+id);
   res.send(recommendation);
 }
-async function deleteData(req: Request, res: Response) {
-  if (process.env.DEVELOP_NODE === "develop") {
-    await recommendationService.deleteData();
-    return res.sendStatus(200);
-  }
-  res.status(401).send("is route invalid for users");
-}
 
 export const recommendationController = {
   insert,
@@ -70,5 +63,4 @@ export const recommendationController = {
   getTop,
   get,
   getById,
-  deleteData,
 };
