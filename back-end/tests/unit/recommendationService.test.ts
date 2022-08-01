@@ -1,15 +1,14 @@
 import { jest } from "@jest/globals";
-import { faker } from "@faker-js/faker";
 
 import { recommendationService } from "../../src/services/recommendationsService.js";
 import { recommendationRepository } from "../../src/repositories/recommendationRepository.js";
+import {
+  recommendationFactory,
+  dataRecommendation,
+} from "./factory/Scenariorecommendation.js";
 
-const recoFactory = {
-  id: 1,
-  name: "tarzan na selva",
-  youtubeLink: "https://www.youtube.com/watch",
-  score: 20,
-};
+const recoFactory = recommendationFactory();
+const dataRecoFactory = dataRecommendation();
 beforeEach(async () => {
   jest.resetAllMocks();
 });
@@ -27,10 +26,7 @@ describe("insert recommendation ", () => {
       .mockImplementation((): any => {
         return false;
       });
-    await recommendationService.insert({
-      name: faker.music.songName(),
-      youtubeLink: "https://www.youtube.com/watch?v=uaebgEChyDQ&t=23s",
-    });
+    await recommendationService.insert(dataRecoFactory);
     expect(recommendationRepository.create).toBeCalled();
   });
   it("insert recommendation fail", async () => {
@@ -39,10 +35,7 @@ describe("insert recommendation ", () => {
       .mockImplementation((): any => {
         return true;
       });
-    const insert = recommendationService.insert({
-      name: faker.music.songName(),
-      youtubeLink: "https://www.youtube.com/watch?v=uaebgEChyDQ&t=2380s",
-    });
+    const insert = recommendationService.insert(dataRecoFactory);
     expect(insert).rejects.toHaveProperty("type", "conflict");
   });
 });
@@ -71,7 +64,7 @@ describe(" sucess Upvote", () => {
       type: "not_found",
     });
   });
-  describe("downvotes tests suites", () => {
+  describe("downvotes tests ", () => {
     it("Sucess in downvote", async () => {
       jest
         .spyOn(recommendationRepository, "find")
@@ -98,12 +91,11 @@ describe(" sucess Upvote", () => {
     });
     it("Downvote with delete recommendation", async () => {
       jest
-        .spyOn(recommendationRepository, "find")
-        .mockResolvedValueOnce(recoFactory);
-
-      jest
         .spyOn(recommendationRepository, "updateScore")
         .mockResolvedValueOnce({ ...recoFactory, score: -6 });
+      jest
+        .spyOn(recommendationRepository, "find")
+        .mockResolvedValueOnce(recoFactory);
 
       jest
         .spyOn(recommendationRepository, "remove")
@@ -115,7 +107,7 @@ describe(" sucess Upvote", () => {
         1,
         "decrement"
       );
-      expect(recommendationRepository.remove).toHaveBeenCalledTimes(1);
+      expect(recommendationRepository.remove).toHaveBeenCalled();
     });
   });
 });
@@ -125,7 +117,7 @@ describe("tests get", () => {
 
     await recommendationService.get();
 
-    expect(recommendationRepository.findAll).toBeCalledTimes(1);
+    expect(recommendationRepository.findAll).toBeCalled();
   });
   it(" call findAll 1 time sucess", async () => {
     jest
@@ -134,40 +126,40 @@ describe("tests get", () => {
 
     await recommendationService.getTop(1);
 
-    expect(recommendationRepository.getAmountByScore).toBeCalledTimes(1);
+    expect(recommendationRepository.getAmountByScore).toBeCalled();
   });
 });
 describe("tests- getRandom", () => {
   it("given math Random < 0.7,  return gt on filter", async () => {
-    const data = {
-      name: faker.music.songName(),
-      youtubeLink: "https://www.youtube.com/watch?v=uaebgEChyDQ&t=23s",
-    };
     jest.spyOn(global.Math, "random").mockReturnValue(0);
     jest.spyOn(global.Math, "floor").mockReturnValue(0);
     jest
       .spyOn(recommendationRepository, "findAll")
-      .mockResolvedValue([{ ...data, id: 1, score: 5 }]);
+      .mockResolvedValue([{ ...dataRecoFactory, id: 1, score: 5 }]);
 
     const randomRecommendation = await recommendationService.getRandom();
 
-    expect(randomRecommendation).toMatchObject({ ...data, id: 1, score: 5 });
+    expect(randomRecommendation).toMatchObject({
+      ...dataRecoFactory,
+      id: 1,
+      score: 5,
+    });
   });
 
   it("given math Random > 0.7, return lte on filter", async () => {
-    const data = {
-      name: faker.music.songName(),
-      youtubeLink: "https://www.youtube.com/watch?v=uaebgEChyDQ&t=23s",
-    };
     jest.spyOn(global.Math, "random").mockReturnValue(0.8);
     jest.spyOn(global.Math, "floor").mockReturnValue(0);
     jest
       .spyOn(recommendationRepository, "findAll")
-      .mockResolvedValue([{ ...data, id: 1, score: 5 }]);
+      .mockResolvedValue([{ ...dataRecoFactory, id: 1, score: 5 }]);
 
     const randomRecommendation = await recommendationService.getRandom();
 
-    expect(randomRecommendation).toMatchObject({ ...data, id: 1, score: 5 });
+    expect(randomRecommendation).toMatchObject({
+      ...dataRecoFactory,
+      id: 1,
+      score: 5,
+    });
   });
 
   it("void array, should return not found error", () => {
