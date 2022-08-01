@@ -31,6 +31,7 @@ export default function CreateNewRecommendation({
       <Input
         type="text"
         placeholder="https://youtu.be/..."
+        id="youtubinho"
         value={link}
         onChange={(e) => setLink(e.target.value)}
         disabled={disabled}
