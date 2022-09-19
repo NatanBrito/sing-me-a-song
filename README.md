@@ -338,8 +338,4 @@ Open cypress graphic interface
   npx cypress open
 ```
 
-## Lessons Learned
-
-In this project I learned a lot about unitary, integration and E2E tests
-
 </br>
